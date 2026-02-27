@@ -14,7 +14,21 @@ FILE_NAME: str = "phisingData.csv"
 TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
 
-SCHEMA_FILE_PATH = os.path.join("data_schema", "schema.yaml")
+from pathlib import Path
+
+# Resolve project root robustly to locate data_schema/schema.yaml
+_CURRENT_FILE = Path(__file__).resolve()
+_PROJECT_ROOT_CANDIDATES = [_CURRENT_FILE.parents[3], _CURRENT_FILE.parents[2]]
+
+SCHEMA_FILE_PATH = None
+for _root in _PROJECT_ROOT_CANDIDATES:
+    _candidate = _root / "data_schema" / "schema.yaml"
+    if _candidate.exists():
+        SCHEMA_FILE_PATH = _candidate
+        break
+
+if SCHEMA_FILE_PATH is None:
+    SCHEMA_FILE_PATH = _PROJECT_ROOT_CANDIDATES[0] / "data_schema" / "schema.yaml"
 
 SAVED_MODEL_DIR =os.path.join("saved_models")
 MODEL_FILE_NAME = "model.pkl"
